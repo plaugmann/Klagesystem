@@ -1,0 +1,40 @@
+H1 {
+    font-family: "Arial";
+    font-size: 50px;
+    text-align: center;
+}
+BODY {
+    font-family: Tahoma;
+    font-size: 12pt;
+    color: black;
+}
+.login {
+    background-image: url("images/khanh-lam-UaY-GVF8CPY-unsplash.jpg");
+    background-size: cover;
+}
+.header {
+    position: absolute;
+    left: 50%;
+    width: 800px;
+    text-align: center;
+    margin-left: -400px;
+    font-size: 50pt;
+    color: white;
+}
+.loginBox {
+    padding-top: 100px;
+    margin: 0 auto;
+}
+.loginBox INPUT {
+    font-size: 20pt;
+    background: none;
+    border: 1px solid black;
+}
+.loginBox TH {
+    font-size: 20pt;
+    padding-right: 10px;
+}
+.errorCell {
+    color: red;
+    font-size: 20pt;
+}
