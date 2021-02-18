@@ -53,8 +53,10 @@ class WebHelper
                                      $_SESSION["user.username"] = $username;
                                      $_SESSION["user.name"] = $name;
                                      $_SESSION["user.role"] = $role;
+                                     $_SESSION['timestamp'] = time();
 
-                                     // Redirect user to welcome page
+
+                                 // Redirect user to welcome page
                                      $errorMsg = "Sucess";
                                      if ($role === "Admin")
                                         header("location: admin/");

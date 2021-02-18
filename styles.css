@@ -7,6 +7,8 @@ BODY {
     font-family: Tahoma;
     font-size: 12pt;
     color: black;
+    background-image: url("images/khanh-lam-UaY-GVF8CPY-unsplash.jpg");
+    background-size: cover;
 }
 .login {
     background-image: url("images/khanh-lam-UaY-GVF8CPY-unsplash.jpg");

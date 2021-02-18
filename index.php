@@ -24,8 +24,4 @@ echo "<h1>Welcome to ". $_SESSION["user.role"] . ": " . $_SESSION["user.name"] .
         });
     });
 </script>
-<?
-
-
-?>
 </body>
