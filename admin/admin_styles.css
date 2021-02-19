@@ -1,0 +1,51 @@
+H1 {
+    font-family: "Arial";
+    font-size: 50px;
+    text-align: center;
+}
+BODY {
+    font-family: Tahoma;
+    font-size: 12pt;
+    color: black;
+    background-image: url("../images/mr-xerty-ny-zsYFlvI0-unsplash.jpg");
+    background-size: cover;
+}
+.header {
+    position: absolute;
+    left: 50%;
+    width: 800px;
+    text-align: center;
+    margin-left: -400px;
+    font-size: 50pt;
+    color: white;
+}
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0px;
+}
+li {
+    padding: 5px;
+}
+li a {
+    text-decoration: none;
+    padding: 5px 10px;
+    border: 1px solid black;
+    background-color: lightgrey;
+}
+li a:hover {
+    text-decoration: underline;
+}
+.fieldInactive {
+    color: gray;
+    font-style: italic;
+}
+.transparentBg {
+    background-color: rgba(255,255,255,0.5);
+}
+TABLE {
+    margin: 0 auto;
+}
+.txtBox {
+    width: 570px;
+}

@@ -1,7 +1,6 @@
 <?php
 session_start();
 if(time() - $_SESSION['timestamp'] > 900) { //subtract new timestamp from the old one
-    echo"<script>alert('15 Minutes over!');</script>";
     header("location: login.php");
     exit;
 } else {
