@@ -51,6 +51,12 @@ include_once "../WebHelper.php";
         $("#btnFields").click(function(){
             $(location).attr('href', 'fields.php')
         });
+        $("#btnUsers").click(function(){
+            $(location).attr('href', 'users.php')
+        });
+        $("#btnProperties").click(function(){
+            $(location).attr('href', 'properties.php')
+        });
     });
 </script>
 </body>

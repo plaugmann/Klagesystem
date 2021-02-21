@@ -12,7 +12,7 @@ if(!isset($_SESSION["user.role"]) || $_SESSION["user.role"] !== "Admin"){
 include_once "../WebHelper.php";
 
 $isNew = false;
-$field = new Field(-1, "","", "",FieldStatus::ACTIVE);
+$field = new Field(-1, "","", "",FieldStatus::ACTIVE, RenderGroup::GROUP_A, ContentType::SINGLE_TEXT);
 if($_SERVER["REQUEST_METHOD"] == "GET") {
     if (!empty(trim($_GET["id"]))) {
         $id = trim($_GET["id"]);
@@ -49,11 +49,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $description = trim($_POST["description"]);
         $autofill = trim($_POST["autoFill"]);
         $status = FieldStatus::FromValue(trim($_POST["status"]));
+        $renderGroup = trim($_POST["renderGroup"]);
+        $contentType = trim($_POST["contentType"]);
 
         $field->name = $name;
         $field->description = $description;
         $field->autoFill = $autofill;
         $field->status = $status;
+        $field->renderGroup = $renderGroup;
+        $field->contentType = $contentType;
 
         if ($field->Save() != 0)
             $saveMessage = 'Ændringer blev gemt';
@@ -66,11 +70,15 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $description = trim($_POST["description"]);
         $autofill = trim($_POST["autoFill"]);
         $status = FieldStatus::FromValue(trim($_POST["status"]));
+        $renderGroup = trim($_POST["renderGroup"]);
+        $contentType = trim($_POST["contentType"]);
 
         $field->name = $name;
         $field->description = $description;
         $field->autoFill = $autofill;
         $field->status = $status;
+        $field->renderGroup = $renderGroup;
+        $field->contentType = $contentType;
 
         if ($field->Insert() != -1)
             $saveMessage = $name . " blev oprettet";
@@ -119,6 +127,86 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <tr>
                     <th>Auto fillout:</th>
                     <td><input type="text" class="txtBox" name="autoFill" id="autoFill" value="<? echo $field->autoFill; ?>"</td>
+                </tr>
+                <tr>
+                    <th>Visningsgruppe</th>
+                    <td>
+                        <?
+
+                        $chkBoxA = "";
+                        $chkBoxB = "";
+                        $chkBoxC = "";
+                        $chkBoxD = "";
+                        $chkBoxE = "";
+                        $chkBoxF = "";
+                        $chkBoxG = "";
+
+                        switch ($field->renderGroup) {
+                            case RenderGroup::GROUP_A :
+                                $chkBoxA = "selected";
+                                break;
+                            case RenderGroup::GROUP_B :
+                                $chkBoxB = "selected";
+                                break;
+                            case RenderGroup::GROUP_C :
+                                $chkBoxC = "selected";
+                                break;
+                            case RenderGroup::GROUP_D :
+                                $chkBoxD = "selected";
+                                break;
+                            case RenderGroup::GROUP_E :
+                                $chkBoxE = "selected";
+                                break;
+                            case RenderGroup::GROUP_F :
+                                $chkBoxF = "selected";
+                                break;
+                            case RenderGroup::GROUP_G :
+                                $chkBoxG = "selected";
+                                break;
+                        }
+                        ?>
+                        <br/>
+                        <label for="renderGroup">Vælg hvor på siden, at dette felt skal vises:</label><br/>
+                        <select name="renderGroup" id="renderGroup">
+                            <option value="A" <? echo $chkBoxA; ?>>Gruppe A - dvs øverst på siden</option>
+                            <option value="B" <? echo $chkBoxB; ?>>Gruppe B</option>
+                            <option value="C" <? echo $chkBoxC; ?>>Gruppe C</option>
+                            <option value="D" <? echo $chkBoxD; ?>>Gruppe D</option>
+                            <option value="E" <? echo $chkBoxE; ?>>Gruppe E</option>
+                            <option value="F" <? echo $chkBoxF; ?>>Gruppe F</option>
+                            <option value="G" <? echo $chkBoxG; ?>>Gruppe G - dvs nederst på siden</option>
+                        </select>
+                        <br/><br/>
+                    </td>
+                </tr>
+                <tr>
+                    <th>Felt type:</th>
+                    <td>
+                        <?
+                        if ($field->contentType == ContentType::SINGLE_TEXT)
+                            echo "<input type='radio' id='contentTypeSingle' name='contentType' value='Single_Text' checked>";
+                        else
+                            echo "<input type='radio' id='contentTypeSingle' name='contentType' value='Single_Text'>";
+                        ?>
+                        <label for="contentTypeSingle">Enkelt-linje tekst</label><br/>
+
+                        <?
+                        if ($field->contentType == ContentType::MULTI_TEXT)
+                            echo "<input type='radio' id='contentTypeMulti' name='contentType' value='Multi_Text' checked>";
+                        else
+                            echo "<input type='radio' id='contentTypeMulti' name='contentType' value='Multi_Text'>";
+                        ?>
+                        <label for="contentTypeMulti">Flere linjers tekst</label><br/>
+
+                        <?
+                        if ($field->contentType == ContentType::NUMBER)
+                            echo "<input type='radio' id='contentTypeNumber' name='contentType' value='Number' checked>";
+                        else
+                            echo "<input type='radio' id='contentTypeNumber' name='contentType' value='Number'>";
+                        ?>
+                        <label for="contentTypeMulti">Tal</label><br/>
+                        <br/>
+                    </td>
                 </tr>
                 <tr>
                     <th>Status:</th>

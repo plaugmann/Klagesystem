@@ -40,6 +40,13 @@ li a:hover {
     color: gray;
     font-style: italic;
 }
+.userAdmin {
+
+}
+.userSales {
+}
+.userUser {
+}
 .transparentBg {
     background-color: rgba(255,255,255,0.5);
 }

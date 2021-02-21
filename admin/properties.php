@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if( $action == "del" and $id != "" ) {
 
-        $errorMsg = Field::deleteField($id);
+        $errorMsg = Property::deleteProperty($id);
         if($errorMsg != "True") {
             echo "<script>alert('Fejl under sletningen: ". $errorMsg ."');</script>";
         }
@@ -31,14 +31,17 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <link rel="stylesheet" href="admin_styles.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css" rel="stylesheet" />
+    <link href='//cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css' rel='stylesheet' type='text/css'>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+    <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <title>Dansk Ejendomsforvaltning - Klagesystem - Administration</title>
 </head>
 <body>
 <div>
     <div class="w3-container w3-center">
         <?
-        echo "<h1>Felter til dataindsamling </h1>";
+        echo "<h1>Ejendomme i systemet</h1>";
 
         ?>
     </div>
@@ -47,12 +50,27 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             &nbsp;
         </div>
         <div class="w3-col m6 w3-center transparentBg">
-            <p>Klik på et af felterne for at redigere</p>
+            <p>Klik på en af ejendommene for at redigere</p>
+            <table id="propertyTable" class="display dataTable" style="width:100%">
+                <thead>
+                    <th>Vej</th>
+                    <th>Nummer</th>
+                    <th>Postnr</th>
+                    <th>By</th>
+                    <th>Ejendomsvurdering</th>
+                    <th>Status</th>
+                </thead>
+                <tfoot>
+                    <th>Vej</th>
+                    <th>Nummer</th>
+                    <th>Postnr</th>
+                    <th>By</th>
+                    <th>Ejendomsvurdering</th>
+                    <th>Status</th>
+                </tfoot>
+            </table>
             <ul>
-                <?
-                    Field::getFields();
-                ?>
-                <li><button id="btnNewField">Nyt felt</button></li>
+                <li><button id="btnNewProperty">Ny ejendom</button></li>
             </ul>
             <ul>
                 <li><button id="btnBack"><-- Tilbage</button></li>
@@ -74,7 +92,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             .html('<div><h6>' + message + '?</h6></div>')
             .dialog({
                 modal: true,
-                title: 'Slet felt?',
+                title: 'Slet ejendom?',
                 zIndex: 10000,
                 autoOpen: true,
                 width: 'auto',
@@ -105,15 +123,65 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
         $("#btnBack").click(function(){
             $(location).attr('href', 'index.php')
         });
-        $("#btnNewField").click(function(){
-            $(location).attr('href', 'editField.php?new=1')
+        $("#btnNewProperty").click(function(){
+            $(location).attr('href', 'editProperty.php?new=1')
         });
-        $(".deleteButton").click(function(){
+        /*$(".deleteButton").click(function(){
 
             var data = $(this).attr('href').split("#id=");
             ConfirmDialog("Er du sikker på at du vil slette: " + data[0].trim(), data[1].trim())
             return false;
+        });*/
+        var table = $('#propertyTable').DataTable({
+            'processing': true,
+            'serverSide': true,
+            'serverMethod': 'post',
+            'ajax': {
+                'url':'propertyAjax.php'
+            },
+            'rowId' : "propId",
+            "language": {
+                "url": "http://cdn.datatables.net/plug-ins/1.10.22/i18n/Danish.json"
+            },
+            'columns': [
+                { data: 'road' },
+                { data: 'houseNo' },
+                { data: 'zip' },
+                { data: 'city' },
+                { data: 'valuation', render: $.fn.dataTable.render.number( '.', ',', 0, '' ) },
+                { data: 'status',
+                    render: function(data, type) {
+                        if (type === 'display') {
+                            var status = '';
+
+                            switch (data) {
+                                case "Waiting":
+                                    status = 'Afventer';
+                                    break;
+                                case "In_Progress":
+                                    status = 'Under udarbejdelse';
+                                    break;
+                                case "Canceled":
+                                    status = 'Afvist';
+                                    break;
+                                case "Complete":
+                                    status = 'Færdig';
+                                    break;
+                            }
+
+                            return status;
+                        }
+
+                        return data;
+                    }
+                },
+            ]
         });
+
+        $('#propertyTable').on( 'click', 'tr', function () {
+            var id = table.row( this ).id();
+            $(location).attr('href', 'editProperty.php?id=' + id);
+        } );
     });
 </script>
 </body>

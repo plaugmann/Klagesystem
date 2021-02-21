@@ -17,7 +17,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if( $action == "del" and $id != "" ) {
 
-        $errorMsg = Field::deleteField($id);
+        $errorMsg = User::deleteUser($id);
         if($errorMsg != "True") {
             echo "<script>alert('Fejl under sletningen: ". $errorMsg ."');</script>";
         }
@@ -38,7 +38,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 <div>
     <div class="w3-container w3-center">
         <?
-        echo "<h1>Felter til dataindsamling </h1>";
+        echo "<h1>Brugere i systemet</h1>";
 
         ?>
     </div>
@@ -47,12 +47,12 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             &nbsp;
         </div>
         <div class="w3-col m6 w3-center transparentBg">
-            <p>Klik på et af felterne for at redigere</p>
+            <p>Klik på en af brugerne for at redigere</p>
             <ul>
                 <?
-                    Field::getFields();
+                    User::getUsers();
                 ?>
-                <li><button id="btnNewField">Nyt felt</button></li>
+                <li><button id="btnNewField">Ny bruger</button></li>
             </ul>
             <ul>
                 <li><button id="btnBack"><-- Tilbage</button></li>
@@ -74,7 +74,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             .html('<div><h6>' + message + '?</h6></div>')
             .dialog({
                 modal: true,
-                title: 'Slet felt?',
+                title: 'Slet bruger?',
                 zIndex: 10000,
                 autoOpen: true,
                 width: 'auto',
@@ -106,7 +106,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             $(location).attr('href', 'index.php')
         });
         $("#btnNewField").click(function(){
-            $(location).attr('href', 'editField.php?new=1')
+            $(location).attr('href', 'editUser.php?new=1')
         });
         $(".deleteButton").click(function(){
 

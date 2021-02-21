@@ -1,5 +1,8 @@
 <?php
 
+include_once ("Classes/Field.php");
+include_once ("Classes/User.php");
+include_once ("Classes/Property.php");
 
 class WebHelper
 {
@@ -18,24 +21,6 @@ class WebHelper
             die("Connection failed: " . $conn->connect_error);
         }
         return $conn;
-    }
-
-    function getFields() {
-        $conn = $this->getConnection();
-        $sql = "SELECT ID, name, status FROM Fields order by name";
-
-        $result = $conn->query($sql);
-
-        if ($result->num_rows > 0) {
-            // output data of each row
-            while($row = $result->fetch_assoc()) {
-                echo "<li><a href='editField.php?id=" . $row["ID"]. "' title='Rediger dette felt' class='field".$row["status"] ."'>".$row["name"] ."</a>&nbsp;<a href='". $row["name"] ."#id=". $row["ID"]."' class='deleteButton' title='Slet dette felt'><img src='delete_icon.png' title='Slet dette felt'></a></li>";
-            }
-        } else {
-            echo "<li><span color='red'>0 results</span></li> ";
-        }
-        $conn->close();
-
     }
 
     function login($username, $password) {
@@ -101,18 +86,7 @@ class WebHelper
     }
 
 
-    function deleteField($id) {
-        $sql = "DELETE FROM Fields WHERE ID = " . $id;
-        $conn = $this->getConnection();
 
-        if ($conn->query($sql) === TRUE) {
-            $conn->close();
-            return "True";
-        } else {
-            return "Error deleting record: " . $conn->error;
-        }
-
-    }
     function sendEmail($to) {
         $subject = 'Test fra hjemmeside';
         $message = 'Kongen er en finke';
@@ -125,105 +99,5 @@ class WebHelper
     }
 }
 
-class Field {
-    public int $id = 0;
-    public string $name = "";
-    public ?string $description =null;
-    public ?string $autoFill = null;
-    public string $status = FieldStatus::ACTIVE;
 
-    public function __construct(int $id, string $name, ?string $description, ?string $autoFill, string $status) {
-        $this->id = $id;
-        $this->name = $name;
-        $this->description = $description;
-        $this->autoFill = $autoFill;
-        $this->status = $status;
-    }
-
-    public static function Load(int $id): Field  {
-        $helper = new WebHelper();
-        $conn = $helper->getConnection();
-        $sql = "SELECT ID, Name, Description, AutoFill, Status FROM Fields WHERE ID = ?";
-        if($stmt = mysqli_prepare($conn, $sql)) {
-            // Bind variables to the prepared statement as parameters
-            mysqli_stmt_bind_param($stmt, "i", $param_ID);
-
-            // Set parameters
-            $param_ID = $id;
-
-            // Attempt to execute the prepared statement
-            if (mysqli_stmt_execute($stmt)) {
-                // Store result
-                mysqli_stmt_store_result($stmt);
-
-                // Check if field exists
-                if (mysqli_stmt_num_rows($stmt) == 1) {
-                    // Bind result variables
-                    mysqli_stmt_bind_result($stmt, $id, $name, $description, $autoFill, $Status);
-                    if (mysqli_stmt_fetch($stmt)) {
-                        return new Field((int) $id, $name, $description, $autoFill, FieldStatus::FromValue($Status));
-                    }
-                }
-            }
-        }
-    }
-
-    public function Insert() {
-        $helper = new WebHelper();
-        $conn = $helper->getConnection();
-        $sql = "INSERT INTO Fields (ID, Name, Description, AutoFill, Status) VALUES (NULL, ?, ?, ?, ?); ";
-
-        if($stmt = mysqli_prepare($conn, $sql)) {
-            mysqli_stmt_bind_param($stmt, "ssss", $param_Name, $param_Description, $param_AutoFill, $param_Status);
-            $param_Name = $this->name;
-            $param_Description = $this->description;
-            $param_AutoFill = $this->autoFill;
-            $param_Status = $this->status;
-
-            $stmt->execute();
-            $this->id = $stmt->insert_id;
-        }
-        $conn->close();
-        return $this->id;
-    }
-
-    public function Save(){
-        $helper = new WebHelper();
-        $conn = $helper->getConnection();
-        $sql = "UPDATE Fields SET Name = ?, Description = ?, AutoFill = ?, Status =? WHERE ID = ?";
-        $affectedRows = -1;
-        if($stmt = mysqli_prepare($conn, $sql)) {
-            mysqli_stmt_bind_param($stmt, "ssssi", $param_Name, $param_Description, $param_AutoFill, $param_Status, $param_Id);
-
-            $param_Name = $this->name;
-            $param_Description = $this->description;
-            $param_AutoFill = $this->autoFill;
-            $param_Status = $this->status;
-            $param_Id = $this->id;
-
-            $stmt->execute();
-
-            $affectedRows = $stmt->affected_rows;
-        }
-
-        $conn->close();
-        return $affectedRows;
-    }
-
-}
-
-class FieldStatus {
-    const ACTIVE = 'Active';
-    const INACTIVE = 'Inactive';
-
-    public static function FromValue($value) {
-        switch ($value) {
-            case "Active" :
-                return FieldStatus::ACTIVE;
-            case "Inactive" :
-                return FieldStatus::INACTIVE;
-        }
-        return FieldStatus::ACTIVE;
-    }
-}
 
