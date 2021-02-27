@@ -2,13 +2,16 @@ H1 {
     font-family: "Arial";
     font-size: 50px;
     text-align: center;
+    color: white;
 }
 BODY {
     font-family: Tahoma;
     font-size: 12pt;
-    color: white;
     background-image: url("images/mitchell-orr-WXqCLJebOc4-unsplash.jpg");
     background-size: cover;
+}
+.transparentBg {
+    background-color: rgba(255,255,255,0.5);
 }
 .login {
     background-image: url("images/khanh-lam-UaY-GVF8CPY-unsplash.jpg");
@@ -39,4 +42,39 @@ BODY {
 .errorCell {
     color: red;
     font-size: 20pt;
+}
+.comment-row {
+    border-bottom: #e0dfdf 1px solid;
+    margin-bottom: 15px;
+    padding: 15px;
+}
+#commentsBox {
+    text-align: left;
+}
+.outer-comment {
+    background: #F0F0F0;
+    padding: 20px;
+    border: #dedddd 1px solid;
+    list-style-type: none;
+}
+
+span.commet-row-label {
+    font-style: italic;
+}
+
+span.posted-by {
+    color: #09F;
+}
+
+.comment-info {
+    font-size: 0.8em;
+}
+.comment-text {
+    margin: 10px 0px;
+
+}
+#comment-message {
+    margin-left: 20px;
+    color: #189a18;
+    display: none;
 }

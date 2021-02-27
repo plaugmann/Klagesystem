@@ -2,7 +2,7 @@
 
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: ../login.php");
+    header("location: ../logout.php");
     exit;
 }
 if(!isset($_SESSION["user.role"]) || $_SESSION["user.role"] !== "Admin"){
@@ -157,7 +157,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </tr>
                     <tr>
                         <th>DinGeo:</th>
-                        <td><input type="text" class="txtBox" name="dinGeoLink" id="dinGeoLink" value="<? echo $property->dinGeoLink; ?>"></td>
+                        <td><input type="text" class="txtBox" name="dinGeoLink" id="dinGeoLink" value="<? echo $property->dinGeoLink; ?>"><br/>
+                            <a href="<? echo $property->dinGeoLink; ?>" target="_blank">Test link</a><br /> </td>
                     </tr>
                     <tr>
                         <th>Firmanavn:</th>
@@ -266,7 +267,13 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                     </tr>
                     <tr>
                         <th>Sagsbehandler:</th>
-                        <td><input type="text" class="txtBox" name="responsible" id="responsible" value="<? echo $property->responsible; ?>"></td>
+                        <td>
+                            <select id="responsible" name="responsible">
+                                <?
+                                    User::getResponsible($property->responsible);
+                                ?>
+                            </select>
+                        </td>
                     </tr>
                     <?
                     if ($saveMessage != "") {?>

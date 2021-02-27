@@ -2,7 +2,7 @@
 
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: ../login.php");
+    header("location: ../logout.php");
     exit;
 }
 if(!isset($_SESSION["user.role"]) || $_SESSION["user.role"] !== "Admin"){

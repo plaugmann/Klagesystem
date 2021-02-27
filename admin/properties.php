@@ -2,7 +2,7 @@
 
 session_start();
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
-    header("location: ../login.php");
+    header("location: ../logout.php");
     exit;
 }
 if(!isset($_SESSION["user.role"]) || $_SESSION["user.role"] !== "Admin"){
@@ -180,7 +180,9 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
         $('#propertyTable').on( 'click', 'tr', function () {
             var id = table.row( this ).id();
-            $(location).attr('href', 'editProperty.php?id=' + id);
+            if (parseInt(id) > 0)
+                $(location).attr('href', 'editProperty.php?id=' + id);
+
         } );
     });
 </script>

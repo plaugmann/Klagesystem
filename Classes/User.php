@@ -152,6 +152,28 @@ class User
 
     }
 
+    public static function getResponsible($selectedID) {
+        $helper = new WebHelper();
+        $conn = $helper->getConnection();
+        $sql = "SELECT ID, name, role FROM Users order by name";
+
+        $result = $conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            // output data of each row
+            while($row = $result->fetch_assoc()) {
+                if ($selectedID == $row["ID"])
+                    echo "<option value='". $row["ID"]."' SELECTED>". $row["name"] ."</option>";
+                else
+                    echo "<option value='". $row["ID"]."'>". $row["name"] ."</option>";
+            }
+        } else {
+            echo "<option value='-1'>Ingen brugere</option> ";
+        }
+        $conn->close();
+
+    }
+
 }
 /*
 class UserRole
