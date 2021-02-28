@@ -137,7 +137,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             'serverSide': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'propertyAjax.php'
+                'url':'../ajax/propertyAjax.php'
             },
             'rowId' : "propId",
             "language": {

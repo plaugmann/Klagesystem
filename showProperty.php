@@ -99,7 +99,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     }
 }
 
-
+$uploadForm = true;
 include_once ("header.php");
 ?>
 <body>
@@ -151,6 +151,12 @@ include_once ("header.php");
                             <th>Dækningsafgift:</th>
                             <td><? echo number_format((float) $property->coverage, 0 , ",", "."); ?> DKK</td>
                         </tr>
+                        <tr>
+                            <th>Filer</th>
+                            <td>
+
+                            </td>
+                        </tr>
                     </table>
                     </p>
                 </div>
@@ -179,6 +185,13 @@ include_once ("header.php");
                 <input name="Action" ID="Action" value="" type="hidden" />
 
             </form>
+            <h3>Filer</h3>
+            <form>
+                <div id="queue"></div>
+                <div id="filesBox" class="transparentBg"></div>
+                <input id="file_upload" name="file_upload" type="file" multiple="true" >
+            </form>
+
             <h3>Kommentarer:</h3>
             <div id="commentsBox">
 
@@ -221,6 +234,32 @@ include_once ("header.php");
             });
     }
 
+    function ConfirmDialog(message) {
+        $('<div></div>').appendTo('body')
+            .html('<div><h6>' + message + '?</h6></div>')
+            .dialog({
+                modal: true,
+                title: 'Slet fil?',
+                zIndex: 10000,
+                autoOpen: true,
+                width: 'auto',
+                resizable: false,
+                buttons: {
+                    Yes: function() {
+                        $(this).dialog("close");
+                        return true;
+                    },
+                    No: function() {
+                        $(this).dialog("close");
+                        return false;
+                    }
+                },
+                close: function(event, ui) {
+                    $(this).remove();
+                }
+            });
+    };
+
     function formatNumber(obj) {
         var n = parseInt(obj.val().replace(/\D/g,''),10);
         obj.val(n.toLocaleString());
@@ -228,7 +267,7 @@ include_once ("header.php");
 
     function getAllComments() {
         $.post(
-            "listCommentsAjax.php",
+            "ajax/listCommentsAjax.php",
             {
                 propertyID: "<? echo $property->id; ?>"
             },
@@ -263,6 +302,63 @@ include_once ("header.php");
             });
     }
 
+    function getAllFiles() {
+        $.post(
+            "ajax/listFilesAjax.php",
+            {
+                propertyID: "<? echo $property->id; ?>"
+            },
+            function(data) {
+                var data = JSON.parse(data);
+
+                var results = new Array();
+                var files = "";
+
+                var list = $("<ul class='files'>");
+                var item = $("<li>").html(files);
+
+                for (var i = 0; (i < data.length); i++) {
+
+                    files = "<div class='flies-row'>"
+                        + "<a href='uploads/<? echo $property->id; ?>/" + data[i] +"' target='_blank'>"
+                        + data[i]
+                        + "</a>&nbsp;"
+                        + "<a href='#' onClick='deleteFile(\""+ data[i] + "\")' class='deleteFile' title='Slet "+ data[i] +"'>"
+                        + "<img src='images/upload-cancel.png' alt='Slet "+ data[i] +"' />"
+                        + "</a>"
+                        + "</div>";
+
+                    var item = $("<li>").html(files);
+                    list.append(item);
+                }
+                $("#filesBox").html(list);
+                getAllComments();
+            });
+    }
+
+    function deleteFile(fileName) {
+
+            if (confirm("Er du sikker på at du vil slette " + fileName + "?")) {
+                $.ajax({
+                    url: "ajax/deleteFileAjax.php",
+                    data: {
+                        propertyID: "<? echo $property->id; ?>",
+                        fileName: fileName
+                    },
+                    type: 'post',
+                    success: function (response) {
+                        if (response) {
+                            getAllFiles();
+                        } else {
+                            alert("Failed to add comments !");
+                            return false;
+                        }
+                    }
+                });
+            }
+            return false;
+    }
+
     $(document).ready(function(){
         $("#name").focus();
         $("#statusRow").delay(2000).fadeOut('slow');
@@ -284,7 +380,7 @@ include_once ("header.php");
             comment = $("#comment").val();
 
             $.ajax({
-                url : "addCommentAjax.php",
+                url : "ajax/addCommentAjax.php",
                 data : {
                     propertyID: "<? echo $property->id; ?>",
                     comment: comment
@@ -301,6 +397,25 @@ include_once ("header.php");
                 }
             });
         });
+
+        getAllFiles();
+        $('#file_upload').uploadifive({
+            'auto'             : true,
+            'checkScript'      : 'ajax/check-exists.php',
+            'fileType'         : 'application/pdf, image/*',
+            'formData'         : {
+                'propertyID': '<?php echo $property->id; ?>',
+                'timestamp' : '<?php echo $timestamp;?>',
+                'token'     : '<?php echo md5('unique_salt' . $timestamp);?>'
+            },
+            'queueID'          : 'queue',
+            'uploadScript'     : 'ajax/uploadAjax.php',
+            'onUploadComplete' : function(file, data) {
+                console.log(data);
+                getAllFiles();
+            }
+        });
+
     });
 </script>
 </body>

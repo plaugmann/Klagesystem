@@ -24,6 +24,12 @@ include_once "WebHelper.php";
 
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
     <script src="//cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <? if (isset($uploadForm)) {
+        echo "<link rel='stylesheet' href='uploadifive.css'>";
+        echo "<script src='jquery.uploadifive.js'></script>";
+    }
+    ?>
+
     <title>Dansk Ejendomsforvaltning - Klagesystem</title>
 </head>
 

@@ -1,5 +1,5 @@
 <?php
-include_once "WebHelper.php";
+include_once "../WebHelper.php";
 $helper = new WebHelper();
 $conn = $helper->getConnection();
 session_start();

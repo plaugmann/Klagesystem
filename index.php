@@ -57,7 +57,7 @@
             'serverSide': true,
             'serverMethod': 'post',
             'ajax': {
-                'url':'userPropertyAjax.php'
+                'url':'ajax/userPropertyAjax.php'
             },
             'rowId' : "propId",
             "language": {
